@@ -1,24 +1,9 @@
-import { useEffect } from "react";
-import { axiosInstance } from "../api/axios-api";
-
 const Article = () => {
-  const articlesData = async () => {
-    const response = await axiosInstance("/articles")
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error));
-    return response;
-  };
-
-  useEffect(() => {
-    articlesData();
-  }, []);
-
   return (
     <div className="article-page">
       <div className="banner">
         <div className="container">
-          <h1>How to build web apps that scale</h1>
-
+          <h1>{"title 넣기"}</h1>
           <div className="article-meta">
             <a href="/profile/eric-simons">
               <img src="http://i.imgur.com/Qr71crq.jpg" />
@@ -56,7 +41,7 @@ const Article = () => {
               years.
             </p>
             <h2 id="introducing-ionic">Introducing RealWorld.</h2>
-            <p>It's a great solution for learning how other frameworks work.</p>
+            <p>Its a great solution for learning how other frameworks work.</p>
             <ul className="tag-list">
               <li className="tag-default tag-pill tag-outline">realworld</li>
               <li className="tag-default tag-pill tag-outline">implementations</li>
