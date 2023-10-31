@@ -1,4 +1,32 @@
+import { useState } from "react";
+import { axiosInstance } from "../api/axios-api";
+import { useNavigate } from "react-router-dom";
+
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const user = { user: { email: email, password: password } };
+  const navigate = useNavigate();
+
+  const handleGetAuth = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axiosInstance.post("/users/login", user);
+      console.log("res", res);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value);
+    console.log(e.target.value);
+  };
+  const handleChangePwd = (e) => {
+    setPassword(e.target.value);
+  };
+
   return (
     <div className="auth-page">
       <div className="container page">
@@ -19,6 +47,8 @@ const SignIn = () => {
                   className="form-control form-control-lg"
                   type="text"
                   placeholder="Email"
+                  onChange={handleChangeEmail}
+                  value={email}
                 />
               </fieldset>
               <fieldset className="form-group">
@@ -26,9 +56,11 @@ const SignIn = () => {
                   className="form-control form-control-lg"
                   type="password"
                   placeholder="Password"
+                  onChange={handleChangePwd}
+                  value={password}
                 />
               </fieldset>
-              <button className="btn btn-lg btn-primary pull-xs-right">
+              <button onClick={handleGetAuth} className="btn btn-lg btn-primary pull-xs-right">
                 Sign in
               </button>
             </form>

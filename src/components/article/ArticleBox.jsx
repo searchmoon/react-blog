@@ -1,33 +1,36 @@
-const ArticleBox = ({ item }) => {
+import { Link } from "react-router-dom";
+
+const ArticleBox = ({ data }) => {
+  console.log("data", data);
   return (
     <>
       <div className="article-preview">
         <div className="article-meta">
-          <a href="/profile/eric-simons">
-            <img src={item.author.image} />
-          </a>
+          <Link to="/profile/eric-simons">
+            <img src={data.author.image} />
+          </Link>
           <div className="info">
-            <a href="/profile/eric-simons" className="author">
-              {item.author.username}
-            </a>
-            <span className="date">{item.createdAt}</span>
+            <Link to="/profile/eric-simons" className="author">
+              {data.author.username}
+            </Link>
+            <span className="date">{data.createdAt}</span>
           </div>
           <button className="btn btn-outline-primary btn-sm pull-xs-right">
-            <i className="ion-heart"></i> {item.favoritesCount}
+            <i className="ion-heart"></i> {data.favoritesCount}
           </button>
         </div>
-        <a href="/article/how-to-build-webapps-that-scale" className="preview-link">
-          <h1>{item.title}</h1>
-          <p>{item.description}</p>
+        <Link to={`/article/${data.slug}`} state={data} className="preview-link">
+          <h1>{data.title}</h1>
+          <p>{data.description}</p>
           <span>Read more...</span>
           <ul className="tag-list">
-            {item.tagList.map((tagList, idx) => (
+            {data.tagList.map((tagList, idx) => (
               <li key={idx} className="tag-default tag-pill tag-outline">
                 {tagList}
               </li>
             ))}
           </ul>
-        </a>
+        </Link>
       </div>
     </>
   );

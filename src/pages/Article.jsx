@@ -1,50 +1,33 @@
+import { useLocation } from "react-router-dom";
+import ArticleMeta from "../components/article/ArticleMeta";
+
 const Article = () => {
+  const location = useLocation();
+  const data = location.state;
+  const { title, description, body, tagList } = data;
+  console.log(location);
+  console.log(data);
   return (
     <div className="article-page">
       <div className="banner">
         <div className="container">
-          <h1>{"title 넣기"}</h1>
-          <div className="article-meta">
-            <a href="/profile/eric-simons">
-              <img src="http://i.imgur.com/Qr71crq.jpg" />
-            </a>
-            <div className="info">
-              <a href="/profile/eric-simons" className="author">
-                Eric Simons
-              </a>
-              <span className="date">January 20th</span>
-            </div>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-plus-round"></i>
-              &nbsp; Follow Eric Simons <span className="counter">(10)</span>
-            </button>
-            &nbsp;&nbsp;
-            <button className="btn btn-sm btn-outline-primary">
-              <i className="ion-heart"></i>
-              &nbsp; Favorite Post <span className="counter">(29)</span>
-            </button>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-edit"></i> Edit Article
-            </button>
-            <button className="btn btn-sm btn-outline-danger">
-              <i className="ion-trash-a"></i> Delete Article
-            </button>
-          </div>
+          <h1>{title}</h1>
+          <ArticleMeta data={data} />
         </div>
       </div>
 
       <div className="container page">
         <div className="row article-content">
           <div className="col-md-12">
-            <p>
-              Web development technologies have evolved at an incredible clip over the past few
-              years.
-            </p>
-            <h2 id="introducing-ionic">Introducing RealWorld.</h2>
-            <p>Its a great solution for learning how other frameworks work.</p>
+            <p>{description}</p>
+            <h2 id="introducing-ionic">{data.title}</h2>
+            <p>{body}</p>
             <ul className="tag-list">
-              <li className="tag-default tag-pill tag-outline">realworld</li>
-              <li className="tag-default tag-pill tag-outline">implementations</li>
+              {tagList.map((list, idx) => (
+                <li key={idx} className="tag-default tag-pill tag-outline">
+                  {list}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -52,32 +35,7 @@ const Article = () => {
         <hr />
 
         <div className="article-actions">
-          <div className="article-meta">
-            <a href="profile.html">
-              <img src="http://i.imgur.com/Qr71crq.jpg" />
-            </a>
-            <div className="info">
-              <a href="" className="author">
-                Eric Simons
-              </a>
-              <span className="date">January 20th</span>
-            </div>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-plus-round"></i>
-              &nbsp; Follow Eric Simons
-            </button>
-            &nbsp;
-            <button className="btn btn-sm btn-outline-primary">
-              <i className="ion-heart"></i>
-              &nbsp; Favorite Article <span className="counter">(29)</span>
-            </button>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-edit"></i> Edit Article
-            </button>
-            <button className="btn btn-sm btn-outline-danger">
-              <i className="ion-trash-a"></i> Delete Article
-            </button>
-          </div>
+          <ArticleMeta data={data} />
         </div>
 
         <div className="row">
@@ -91,7 +49,7 @@ const Article = () => {
                 ></textarea>
               </div>
               <div className="card-footer">
-                <img src="http://i.imgur.com/Qr71crq.jpg" className="comment-author-img" />
+                <img src={data.author.image} className="comment-author-img" />
                 <button className="btn btn-sm btn-primary">Post Comment</button>
               </div>
             </form>
@@ -104,11 +62,11 @@ const Article = () => {
               </div>
               <div className="card-footer">
                 <a href="/profile/author" className="comment-author">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" className="comment-author-img" />
+                  <img src={data.author.image} className="comment-author-img" />
                 </a>
                 &nbsp;
                 <a href="/profile/jacob-schmidt" className="comment-author">
-                  Jacob Schmidt
+                  {data.author.username}
                 </a>
                 <span className="date-posted">Dec 29th</span>
               </div>
@@ -122,11 +80,11 @@ const Article = () => {
               </div>
               <div className="card-footer">
                 <a href="/profile/author" className="comment-author">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" className="comment-author-img" />
+                  <img src={data.author.image} className="comment-author-img" />
                 </a>
                 &nbsp;
                 <a href="/profile/jacob-schmidt" className="comment-author">
-                  Jacob Schmidt
+                  {data.author.username}
                 </a>
                 <span className="date-posted">Dec 29th</span>
                 <span className="mod-options">

@@ -14,6 +14,7 @@ function Home() {
       const articles = response.data.articles;
       dispatch(setArticleList(articles));
       console.log(articles);
+      console.log(response);
     } catch (error) {
       console.log(error);
       throw error;
@@ -55,8 +56,8 @@ function Home() {
               </ul>
             </div>
             {/* article list 넣어주는곳  */}
-            {data.map((item) => (
-              <ArticleBox key={item.slug} item={item} />
+            {data.map((data) => (
+              <ArticleBox key={data.slug} data={data} />
             ))}
 
             <ul className="pagination">
