@@ -1,11 +1,24 @@
 import { useState } from "react";
 import { axiosInstance } from "../api/axios-api";
 import { useNavigate } from "react-router-dom";
+import ErrorMsg from "../components/common/ErrorMsg";
+import useErrorMsg from "../hooks/useErrorMsg";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const initData = {
+    email: "",
+    password: "",
+    emailAndPassword: "",
+  };
+
+  const { errorMessages, setError, clearErrors } = useErrorMsg(initData);
+
+  const [userData, setUserData] = useState(initData);
+
+  const { email, password } = userData;
+
   const user = { user: { email: email, password: password } };
+
   const navigate = useNavigate();
 
   const handleGetAuth = async (e) => {
@@ -15,16 +28,24 @@ const SignIn = () => {
       console.log("res", res);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      const responseText = error.response.request.responseText;
+      const errorText = JSON.parse(responseText).errors;
+
+      const setErrorMsg = (resText, field) => {
+        return resText[field] ? resText[field][0] : null;
+      };
+
+      setError("emailAndPassword", setErrorMsg(errorText, "email or password"));
+
+      setTimeout(() => {
+        clearErrors();
+      }, 2000);
     }
   };
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
-    console.log(e.target.value);
-  };
-  const handleChangePwd = (e) => {
-    setPassword(e.target.value);
+  const handleChangeInput = (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
   };
 
   return (
@@ -36,18 +57,14 @@ const SignIn = () => {
             <p className="text-xs-center">
               <a href="/register">Need an account?</a>
             </p>
-
-            <ul className="error-messages">
-              <li>That email is already taken</li>
-            </ul>
-
             <form>
               <fieldset className="form-group">
                 <input
                   className="form-control form-control-lg"
                   type="text"
                   placeholder="Email"
-                  onChange={handleChangeEmail}
+                  onChange={handleChangeInput}
+                  name="email"
                   value={email}
                 />
               </fieldset>
@@ -56,10 +73,14 @@ const SignIn = () => {
                   className="form-control form-control-lg"
                   type="password"
                   placeholder="Password"
-                  onChange={handleChangePwd}
+                  onChange={handleChangeInput}
+                  name="password"
                   value={password}
                 />
               </fieldset>
+              {errorMessages.emailAndPassword && (
+                <ErrorMsg message={errorMessages.emailAndPassword} />
+              )}
               <button onClick={handleGetAuth} className="btn btn-lg btn-primary pull-xs-right">
                 Sign in
               </button>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { axiosInstance } from "../api/axios-api";
 import { useNavigate } from "react-router-dom";
+import useErrorMsg from "../hooks/useErrorMsg";
+import ErrorMsg from "../components/common/ErrorMsg";
 
 const SignUp = () => {
   const initData = {
@@ -9,7 +11,7 @@ const SignUp = () => {
     username: "",
   };
 
-  const [userErrorMsg, setUserErrorMsg] = useState(initData);
+  const { errorMessages, setError, clearErrors } = useErrorMsg(initData);
 
   const [userData, setUserData] = useState(initData);
 
@@ -31,23 +33,19 @@ const SignUp = () => {
       console.log(res);
       setUserData(initData);
       navigate("/login");
-
     } catch (error) {
       const responseText = JSON.parse(error.response.request.responseText);
 
-      const setErrorMsg = (responseText, field) => {
-        return responseText.errors[field] ? responseText.errors[field][0] : null;
+      const setErrorMsg = (resText, field) => {
+        return resText.errors[field] ? responseText.errors[field][0] : null;
       };
 
-      const pwdErrorMsg = setErrorMsg(responseText, "password");
-      const emailErrorMsg = setErrorMsg(responseText, "email");
-      const usernameErrorMsg = setErrorMsg(responseText, "username");
-      pwdErrorMsg && setUserErrorMsg({ ...userErrorMsg, password: pwdErrorMsg });
-      emailErrorMsg && setUserErrorMsg({ ...userErrorMsg, email: emailErrorMsg });
-      usernameErrorMsg && setUserErrorMsg({ ...userErrorMsg, username: usernameErrorMsg });
+      setError("password", setErrorMsg(responseText, "password"));
+      setError("email", setErrorMsg(responseText, "email"));
+      setError("username", setErrorMsg(responseText, "username"));
 
       setTimeout(() => {
-        setUserErrorMsg(initData);
+        clearErrors();
       }, 2000);
     }
   };
@@ -82,10 +80,8 @@ const SignUp = () => {
                   onChange={handleChangeInput}
                 />
               </fieldset>
-              {userErrorMsg.username && (
-                <ul className="error-messages">
-                  <li>That username {userErrorMsg.username}</li>
-                </ul>
+              {errorMessages.username && (
+                <ErrorMsg field="username" message={errorMessages.username} />
               )}
               <fieldset className="form-group">
                 <input
@@ -97,11 +93,7 @@ const SignUp = () => {
                   onChange={handleChangeInput}
                 />
               </fieldset>
-              {userErrorMsg.email && (
-                <ul className="error-messages">
-                  <li>That email {userErrorMsg.email}</li>
-                </ul>
-              )}
+              {errorMessages.email && <ErrorMsg field="email" message={errorMessages.email} />}
               <fieldset className="form-group">
                 <input
                   className="form-control form-control-lg"
@@ -112,10 +104,8 @@ const SignUp = () => {
                   onChange={handleChangeInput}
                 />
               </fieldset>
-              {userErrorMsg.password && (
-                <ul className="error-messages">
-                  <li>password {userErrorMsg.password}</li>
-                </ul>
+              {errorMessages.password && (
+                <ErrorMsg field="password" message={errorMessages.password} />
               )}
               <button onClick={handleGetAuth} className="btn btn-lg btn-primary pull-xs-right">
                 Sign up
